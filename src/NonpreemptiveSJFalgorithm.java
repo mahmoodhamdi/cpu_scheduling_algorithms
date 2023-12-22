@@ -20,6 +20,11 @@ class Process {
 }
 
 class SJFNonPreemptiveScheduling {
+    // ANSI escape codes for text colors
+    private static final String RESET = "\u001B[0m";
+    private static final String CYAN = "\u001B[36m";
+    private static final String BOLD = "\u001B[1m";
+
     public static void run(List<Process> processes) {
         List<Process> completedProcesses = new ArrayList<>();
         List<Process> waitingProcesses = new ArrayList<>(processes);
@@ -30,8 +35,15 @@ class SJFNonPreemptiveScheduling {
         // Sort processes by burst time (shortest first)
         Collections.sort(waitingProcesses, (p1, p2) -> Integer.compare(p1.burstTime, p2.burstTime));
 
+        System.out.println(CYAN + BOLD + "Shortest Job First (SJF) - Non-Preemptive Scheduling" + RESET);
+
+        // Print table header
+        System.out.format("%-12s%-12s%-12s%-15s%-15s%-15s\n",
+                "Process", "Arrival Time", "Burst Time", "Waiting Time", "Turnaround Time", "Completion Time");
+
         for (Process currentProcess : waitingProcesses) {
-            System.out.println("Executing " + currentProcess.name + " at time " + currentTime);
+            System.out.format("%-12s%-12d%-12d", currentProcess.name, currentProcess.arrivalTime,
+                    currentProcess.burstTime);
 
             currentProcess.waitingTime = currentTime - currentProcess.arrivalTime;
             totalWaitingTime += currentProcess.waitingTime;
@@ -43,26 +55,28 @@ class SJFNonPreemptiveScheduling {
 
             completedProcesses.add(currentProcess);
 
-            System.out.println("Process " + currentProcess.name + " - Waiting Time: " +
-                    currentProcess.waitingTime + ", Turnaround Time: " + currentProcess.turnaroundTime);
+            // Print process details
+            System.out.format("%-15d%-15d%-15d\n",
+                    currentProcess.waitingTime, currentProcess.turnaroundTime, currentTime);
         }
 
         double averageWaitingTime = (double) totalWaitingTime / completedProcesses.size();
         double averageTurnaroundTime = (double) totalTurnaroundTime / completedProcesses.size();
 
-        System.out.println("Average Waiting Time: " + averageWaitingTime);
-        System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
+        // Print average times
+        System.out.println("\n" + BOLD + "Average Waiting Time: " + RESET + CYAN + averageWaitingTime + RESET);
+        System.out.println(BOLD + "Average Turnaround Time: " + RESET + CYAN + averageTurnaroundTime + RESET);
     }
 
     public static void runWithUserInput() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the number of processes: ");
+        System.out.print("\nEnter the number of processes: ");
         int numProcesses = scanner.nextInt();
 
         List<Process> processes = new ArrayList<>();
         for (int i = 1; i <= numProcesses; i++) {
-            System.out.println("Enter details for process P" + i + ":");
+            System.out.println("\nEnter details for process P" + i + ":");
             System.out.print("Arrival Time: ");
             int arrivalTime = scanner.nextInt();
             System.out.print("Burst Time: ");
