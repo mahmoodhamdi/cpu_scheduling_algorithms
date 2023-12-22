@@ -12,36 +12,46 @@ public class Main {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("\n" + CYAN + "🌟 Welcome to CPU Scheduling Simulator! 🌟" + RESET);
-            displayMenu();
 
-            System.out.print("\nEnter the number of the selected algorithm: ");
-            int selectedAlgorithm = scanner.nextInt();
+            while (true) {
+                displayMenu();
 
-            System.out.println(); // Add an empty line for better separation
+                System.out.print("\nEnter the number of the selected algorithm (Enter 0 to exit): ");
+                int selectedAlgorithm = getIntInput(scanner);
 
-            switch (selectedAlgorithm) {
-                case 1:
-                    runAlgorithm("FCFS", YELLOW, FCFSScheduling::runWithUserInput);
+                System.out.println(); // Add an empty line for better separation
+
+                if (selectedAlgorithm == 0) {
+                    System.out.println(GREEN + "👋 Thank you for using the CPU Scheduling Simulator. Goodbye!" + RESET);
                     break;
-                case 2:
-                    runAlgorithm("SJF (Non-Preemptive)", YELLOW, SJFNonPreemptiveScheduling::runWithUserInput);
-                    break;
-                case 3:
-                    runAlgorithm("SJF (Preemptive)", YELLOW, SJFPreemptiveScheduling::runWithUserInput);
-                    break;
-                case 4:
-                    runAlgorithm("Round Robin", YELLOW, () -> RoundRobin.main(args));
-                    break;
-                case 5:
-                    runAlgorithm("Priority Scheduling (Preemptive)", YELLOW,
-                            () -> PriorityPreemptiveScheduling.main(args));
-                    break;
-                case 6:
-                    runAlgorithm("Priority Scheduling (Non-Preemptive)", YELLOW,
-                            () -> NonPreemptivePriorityCPUSchedulingAlgorithm.main(args));
-                    break;
-                default:
-                    System.out.println(RED + "❌ Invalid choice. Please choose a valid algorithm." + RESET);
+                }
+
+                switch (selectedAlgorithm) {
+                    case 1:
+                        runAlgorithm("FCFS (First Come First Serve)", YELLOW, FCFSScheduling::runWithUserInput);
+                        break;
+                    case 2:
+                        runAlgorithm("SJF (Shortest Job First - Non-Preemptive)", YELLOW,
+                                SJFNonPreemptiveScheduling::runWithUserInput);
+                        break;
+                    case 3:
+                        runAlgorithm("SJF (Shortest Job First - Preemptive)", YELLOW,
+                                SJFPreemptiveScheduling::runWithUserInput);
+                        break;
+                    case 4:
+                        runAlgorithm("Round Robin", YELLOW, () -> RoundRobin.main(args));
+                        break;
+                    case 5:
+                        runAlgorithm("Priority Scheduling (Preemptive)", YELLOW,
+                                () -> PriorityPreemptiveScheduling.main(args));
+                        break;
+                    case 6:
+                        runAlgorithm("Priority Scheduling (Non-Preemptive)", YELLOW,
+                                () -> NonPreemptivePriorityCPUSchedulingAlgorithm.main(args));
+                        break;
+                    default:
+                        System.out.println(RED + "❌ Invalid choice. Please choose a valid algorithm." + RESET);
+                }
             }
         } catch (Exception e) {
             System.out.println(RED + "💥 An error occurred: " + e.getMessage() + RESET);
@@ -49,17 +59,28 @@ public class Main {
     }
 
     private static void displayMenu() {
-        System.out.println("Choose a scheduling algorithm:");
+        System.out.println("Choose a CPU scheduling algorithm:");
         System.out.println("1. " + GREEN + "FCFS (First Come First Serve)" + RESET);
         System.out.println("2. " + GREEN + "SJF (Shortest Job First - Non-Preemptive)" + RESET);
         System.out.println("3. " + GREEN + "SJF (Shortest Job First - Preemptive)" + RESET);
         System.out.println("4. " + GREEN + "Round Robin" + RESET);
         System.out.println("5. " + GREEN + "Priority Scheduling (Preemptive)" + RESET);
         System.out.println("6. " + GREEN + "Priority Scheduling (Non-Preemptive)" + RESET);
+        System.out.println("0. " + GREEN + "Exit" + RESET);
     }
 
     private static void runAlgorithm(String algorithmName, String color, Runnable algorithmRunner) {
         System.out.println(color + "Running " + BOLD + algorithmName + BOLD + " algorithm..." + RESET);
         algorithmRunner.run();
+    }
+
+    private static int getIntInput(Scanner scanner) {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print(RED + "❌ Invalid input. Please enter a number: " + RESET);
+            }
+        }
     }
 }
